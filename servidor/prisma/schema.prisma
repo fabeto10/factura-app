@@ -1,0 +1,23 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL") // Apunta a la variable en tu .env
+}
+
+model Factura {
+  id            Int      @id @default(autoincrement())
+  nombreArchivo String
+  fechaEmision  String?
+  emisor        String?
+  numeroFactura String?
+  concepto      String?
+  subtotal      Float?
+  iva          Float?
+  total         Float?
+  moneda        String?
+  createdAt     DateTime @default(now())
+}
