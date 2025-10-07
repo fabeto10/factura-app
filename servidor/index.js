@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Permite requests desde tu frontend React
+  origin: 'http://localhost:3000',
   credentials: true
 }));
 
@@ -38,6 +38,36 @@ if (!openaiApiKey) {
   console.error('ERROR: OPENAI_API_KEY no está configurada en el archivo .env');
   process.exit(1);
 }
+
+// Ruta básica para la raíz del sitio - NECESARIA para ngrok
+app.get('/', (req, res) => {
+  res.send(`
+    <html>
+      <head><title>Servidor de Facturas</title></head>
+      <body>
+        <h1>✅ Servidor funcionando correctamente</h1>
+        <p>El backend para la aplicación de procesamiento de facturas está en línea.</p>
+        <p><strong>Endpoints disponibles:</strong></p>
+        <ul>
+          <li><code>GET /api/facturas</code> - Listar facturas</li>
+          <li><code>POST /api/procesar-factura</code> - Procesar nueva factura</li>
+          <li><code>GET /api/health</code> - Estado del servidor</li>
+        </ul>
+        <hr>
+        <p>Frontend: <a href="http://localhost:3000">http://localhost:3000</a></p>
+      </body>
+    </html>
+  `);
+});
+
+// Esta ruta también es útil para verificar la salud del servidor
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'Servidor de facturas funcionando',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Endpoint para procesar facturas :cite[1]:cite[7]
 app.post('/api/procesar-factura', upload.single('imagen'), async (req, res) => {
